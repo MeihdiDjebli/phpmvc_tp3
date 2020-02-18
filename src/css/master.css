@@ -1,0 +1,7 @@
+.fa-star {
+    color: #bbbbbb;
+}
+
+.fa-star.fav, .fa-star:hover {
+    color: #ffcc54;
+}
