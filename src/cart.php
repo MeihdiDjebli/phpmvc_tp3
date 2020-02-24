@@ -10,8 +10,6 @@ if (! isset($_SESSION['fav'])) {
     $_SESSION['fav'] = []; // Favoris ["AA0011", "B013331"]
 }
 
-$products = [];
-
 ?>
 <!doctype html>
 
@@ -58,18 +56,41 @@ $products = [];
 
             <ul class="list-group">
                 <?php
+                $conn = mysqli_connect("db", "root", "root", "technofil");
+
+                if (! $conn) {
+                    exit("Erreur de connexion à la base de données");
+                }
+
+                // Récupérer le label et price du produit indiqué par son id
+                $query = "SELECT label, price FROM product WHERE id = %d"; // %d attend un entier fourni par la fonction sprintf
                 foreach ($_SESSION['cart'] as $ref => $amount) {
-                    $label = $products[$ref];
+                    $res = mysqli_query($conn, sprintf($query, $ref));
+
+                    if (! $res) {
+                        $mysql_error_msg = mysqli_error($conn);
+                        exit("La requête ne fonctionne pas ($mysql_error_msg)");
+                    }
+
+                    $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+
+                    $label = $row['label'];
                     ?>
 
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <?= $label ?> (<?= $ref ?>)
-                        <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= $amount ?></span>
+                        <span>
+                            <span><?= $label ?> (<?= $ref ?>)</span>
+                        </span>
+                        <span class="col-1">
+                            <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= $amount ?></span>
+                        </span>
                     </li>
                 <?php } ?>
                 <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                    TOTAL
-                    <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= array_sum($_SESSION['cart']) ?></span>
+                    <span>TOTAL</span>
+                    <span class="col-1">
+                        <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= array_sum($_SESSION['cart']) ?></span>
+                    </span>
                 </li>
             </ul>
 
@@ -97,11 +118,21 @@ $products = [];
             $favProductsNotInCart = array_diff($_SESSION['fav'], array_keys($_SESSION['cart']));
 
             foreach ($favProductsNotInCart as $ref) {
-                $label = $products[$ref];
+                $res = mysqli_query($conn, sprintf($query, $ref));
+
+                if (! $res) {
+                    $mysql_error_msg = mysqli_error($conn);
+                    exit("La requête a échouée ($mysql_error_msg)");
+                }
+
+                $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+
+                $label = $row['label'];
+                $price = $row['price'];
                 ?>
 
                 <a href="index.php?action=add&ref=<?=$ref?>" class="btn btn-success m-1">
-                    <i class="fa fa-cart-plus"></i> <?=$label?> (<?=$ref?>)
+                    <i class="fa fa-cart-plus"></i> <?=$label?> (<?=$ref?>) <?=$price?> €
                 </a>
             <?php
             }

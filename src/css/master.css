@@ -5,3 +5,19 @@
 .fa-star.fav, .fa-star:hover {
     color: #ffcc54;
 }
+
+.table-product tr td:first-child {
+    width: 5%;
+}
+
+.table-product tr td:nth-child(2) {
+    width: 70%;
+}
+
+.table-product tr td:nth-child(3) {
+    width: 10%;
+}
+
+.table-product tr td:last-child {
+    width: 15%;
+}
