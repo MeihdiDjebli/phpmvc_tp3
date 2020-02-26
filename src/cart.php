@@ -64,6 +64,7 @@ if (! isset($_SESSION['fav'])) {
 
                 // Récupérer le label et price du produit indiqué par son id
                 $query = "SELECT label, price FROM product WHERE id = %d"; // %d attend un entier fourni par la fonction sprintf
+                $total = 0;
                 foreach ($_SESSION['cart'] as $ref => $amount) {
                     $res = mysqli_query($conn, sprintf($query, $ref));
 
@@ -75,14 +76,17 @@ if (! isset($_SESSION['fav'])) {
                     $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
 
                     $label = $row['label'];
+                    $price = $row['price'];
+                    $total += $price * $amount;
                     ?>
 
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
-                            <span><?= $label ?> (<?= $ref ?>)</span>
+                            <span><?= $label ?> (<?= $ref ?>) à <?= $price ?> €</span>
                         </span>
                         <span class="col-1">
                             <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= $amount ?></span>
+                            <span><?= $price * $amount ?> €</span>
                         </span>
                     </li>
                 <?php } ?>
@@ -90,6 +94,7 @@ if (! isset($_SESSION['fav'])) {
                     <span>TOTAL</span>
                     <span class="col-1">
                         <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= array_sum($_SESSION['cart']) ?></span>
+                        <span><?= $total ?> €</span>
                     </span>
                 </li>
             </ul>
