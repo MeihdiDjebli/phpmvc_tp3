@@ -65,6 +65,17 @@ if ($action !== null) { // Traitement des actions
                     <i class="fa fa-3x fa-shopping-cart"></i>
                     <span class="badge badge-dark"><?=array_sum($_SESSION['cart'])?></span>
                 </a>
+
+                <?php if (! isset($_SESSION['user'])) { ?>
+                    <a class="text-dark text-decoration-none ml-2" href="login.php">
+                        <i class="fa fa-3x fa-user"></i>
+                    </a>
+                <?php } else { ?>
+                    <a class="text-dark text-decoration-none ml-2" href="logout.php">
+                        <i class="fa fa-3x fa-user-times"></i>
+                        <span><?= $_SESSION['user'] ?></span>
+                    </a>
+                <?php } ?>
             </div>
         </div>
     </div>
