@@ -2,11 +2,11 @@
 
 session_start();
 
-if (! isset($_SESSION['cart']) || ($_GET['action'] && $_GET['action'] === "prune")) {
+if (!isset($_SESSION['cart']) || (isset($_GET['action']) && $_GET['action'] === "prune")) {
     $_SESSION['cart'] = []; // Panier ["AA0011" => 5, "AA0021" => 1]
 }
 
-if (! isset($_SESSION['fav'])) {
+if (!isset($_SESSION['fav'])) {
     $_SESSION['fav'] = []; // Favoris ["AA0011", "B013331"]
 }
 
@@ -20,7 +20,7 @@ $products = [];
 <head>
     <meta charset="utf-8">
     <title>Tech No Fils</title>
-    <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon"/>
     <link rel="stylesheet" href="css/bootstrap.css">
     <!-- See https://fontawesome.com/v4.7.0/icons/ for more informations -->
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -40,7 +40,7 @@ $products = [];
             <div class="position-absolute" style="bottom: 5px;">
                 <a class="text-dark text-decoration-none" href="cart.php">
                     <i class="fa fa-3x fa-shopping-cart"></i>
-                    <span class="badge badge-dark"><?=array_sum($_SESSION['cart'])?></span>
+                    <span class="badge badge-dark"><?= array_sum($_SESSION['cart']) ?></span>
                 </a>
             </div>
         </div>
@@ -66,10 +66,13 @@ $products = [];
                         <?= $label ?> (<?= $ref ?>)
                         <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= $amount ?></span>
                     </li>
-                <?php } ?>
+                <?php
+                } ?>
                 <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
                     TOTAL
-                    <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= array_sum($_SESSION['cart']) ?></span>
+                    <span class="badge badge-dark badge-pill"><i class="fa fa-times"></i> <?= array_sum(
+                            $_SESSION['cart']
+                        ) ?></span>
                 </li>
             </ul>
 
@@ -100,10 +103,10 @@ $products = [];
                 $label = $products[$ref];
                 ?>
 
-                <a href="index.php?action=add&ref=<?=$ref?>" class="btn btn-success m-1">
-                    <i class="fa fa-cart-plus"></i> <?=$label?> (<?=$ref?>)
+                <a href="index.php?action=add&ref=<?= $ref ?>" class="btn btn-success m-1">
+                    <i class="fa fa-cart-plus"></i> <?= $label ?> (<?= $ref ?>)
                 </a>
-            <?php
+                <?php
             }
 
             if (count($favProductsNotInCart) === 0) {
